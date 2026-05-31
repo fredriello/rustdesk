@@ -7,6 +7,13 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# Prevent parallel sync jobs from conflicting on push
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: true
+
+# NOTE: The master branch must allow GitHub Actions to push (i.e. branch
+# protection rules, if any, must permit pushes from the GITHUB_TOKEN).
 permissions:
   contents: write
 

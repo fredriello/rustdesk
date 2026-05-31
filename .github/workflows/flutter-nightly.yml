@@ -1,5 +1,9 @@
 name: Flutter Nightly Build
 
+# NOTE: GitHub Actions scheduled triggers only run on the repository's default
+# branch. This workflow should exist on the `master` branch, and the
+# repository's default branch should be set to `master` for the cron trigger
+# to fire correctly.
 on:
   schedule:
     # schedule build every night
