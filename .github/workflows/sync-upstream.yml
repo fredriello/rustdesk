@@ -1,0 +1,42 @@
+name: Sync Upstream
+
+on:
+  schedule:
+    # Sync from upstream daily at 22:00 UTC (before nightly build at 00:00)
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+  workflow_call:
+
+# Prevent parallel sync jobs from conflicting on push
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/rustdesk/rustdesk.git
+
+      - name: Fetch upstream master
+        run: git fetch upstream master
+
+      - name: Merge upstream/master (auto-resolve conflicts favoring upstream)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Use -X theirs to auto-resolve conflicts by accepting upstream changes
+          git merge -X theirs upstream/master --no-edit
+
+      - name: Push to origin
+        run: git push origin master
