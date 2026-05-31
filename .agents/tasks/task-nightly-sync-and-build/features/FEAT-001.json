@@ -1,0 +1,26 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Create a sync-upstream workflow and modify the nightly workflow to sync from upstream before building, ensuring the fork stays up-to-date with rustdesk/rustdesk and nightly releases include the latest upstream code.",
+  "status": "in_progress",
+  "steps": [
+    "Create .github/workflows/sync-upstream.yml that: (a) runs daily on a cron schedule at 22:00 UTC (2 hours before the nightly build at 00:00), (b) can be triggered manually via workflow_dispatch, (c) uses actions/checkout@v4 to check out the fork's default branch (master), (d) adds upstream remote https://github.com/rustdesk/rustdesk.git, (e) fetches upstream master branch, (f) merges upstream/master into the local branch using fast-forward or merge, (g) pushes the updated branch back to origin. Use GITHUB_TOKEN with contents: write permission. Handle merge conflicts gracefully (fail the workflow with a clear error message if conflicts occur).",
+    "Modify .github/workflows/flutter-nightly.yml to: (a) add a sync-upstream job that calls the sync-upstream.yml workflow (uses: ./.github/workflows/sync-upstream.yml), (b) make the existing run-flutter-nightly-build job depend on the sync job (needs: sync-upstream), (c) keep the existing cron schedule '0 0 * * *' and workflow_dispatch trigger unchanged.",
+    "In sync-upstream.yml, ensure the workflow can be called both standalone (on schedule + workflow_dispatch) and as a reusable workflow (workflow_call) so that flutter-nightly.yml can invoke it."
+  ],
+  "acceptance_criteria": [
+    "A new file .github/workflows/sync-upstream.yml exists with valid YAML syntax",
+    "sync-upstream.yml supports triggers: schedule, workflow_dispatch, and workflow_call",
+    "sync-upstream.yml fetches from https://github.com/rustdesk/rustdesk.git upstream and merges/rebases into the fork's master branch",
+    "flutter-nightly.yml calls sync-upstream.yml before calling flutter-build.yml",
+    "flutter-nightly.yml still passes upload-artifact: true and upload-tag: 'nightly' to flutter-build.yml",
+    "Both workflow files have valid YAML syntax"
+  ],
+  "verification": [
+    "Run 'python3 -c \"import yaml; yaml.safe_load(open('.github/workflows/sync-upstream.yml'))\"' to validate YAML syntax",
+    "Run 'python3 -c \"import yaml; yaml.safe_load(open('.github/workflows/flutter-nightly.yml'))\"' to validate YAML syntax",
+    "Inspect both files to confirm logical correctness of the workflow structure"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

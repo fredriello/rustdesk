@@ -1,0 +1,7 @@
+{
+  "task_id": "task-nightly-sync-and-build",
+  "task_description": "Set up GitHub Actions workflows to daily sync from upstream rustdesk/rustdesk repository, compile nightly builds, and publish them to GitHub Releases.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001"],
+  "blocked_reason": null
+}

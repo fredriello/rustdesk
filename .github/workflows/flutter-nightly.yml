@@ -7,7 +7,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  sync-upstream:
+    uses: ./.github/workflows/sync-upstream.yml
+    secrets: inherit
+
   run-flutter-nightly-build:
+    needs: [sync-upstream]
     uses: ./.github/workflows/flutter-build.yml
     secrets: inherit
     with:

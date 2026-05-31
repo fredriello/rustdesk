@@ -1,0 +1,20 @@
+{
+  "project_type": "Rust + Flutter desktop/mobile app (RustDesk remote desktop)",
+  "language": "Rust, Dart (Flutter), Python (build scripts)",
+  "build_system": "cargo + flutter + python build.py; GitHub Actions CI/CD",
+  "test_framework": "N/A for this task (workflow YAML files only)",
+  "build_command": "N/A (workflow files are validated by GitHub Actions itself)",
+  "test_command": "yamllint or actionlint for workflow validation (best-effort)",
+  "verification_instructions": "Validate YAML syntax of new/modified workflow files. Check that workflow references are consistent.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "Repository is already cloned. No additional setup needed for workflow file changes.",
+  "environment_constraints": "COMMON_DEPENDENCIES network mode. Cannot run actual GitHub Actions workflows locally. Validation is limited to YAML syntax and logical correctness.",
+  "contribution_requirements": "Change only what is required. Prefer the smallest valid diff. Keep naming/style consistent with nearby code.",
+  "key_patterns": "Workflows use reusable workflow pattern (workflow_call). flutter-build.yml is the main build workflow accepting upload-artifact (bool) and upload-tag (string) inputs. Releases use softprops/action-gh-release@v1 with prerelease: true. Nightly build uses tag 'nightly'. flutter-nightly.yml triggers flutter-build.yml via 'uses: ./.github/workflows/flutter-build.yml'.",
+  "relevant_files": [
+    ".github/workflows/flutter-nightly.yml",
+    ".github/workflows/flutter-build.yml",
+    ".github/workflows/flutter-tag.yml"
+  ],
+  "directory_structure": ".github/workflows/ contains all CI/CD workflows. flutter-build.yml is the comprehensive build workflow called by flutter-nightly.yml and flutter-tag.yml."
+}
