@@ -1,5 +1,7 @@
 name: Flutter Nightly Build
 
+# NOTE: GitHub Actions scheduled triggers only run on the repository's default
+# branch. Ensure the default branch is set to `master` for cron to fire.
 on:
   schedule:
     # schedule build every night
@@ -7,7 +9,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  sync-upstream:
+    uses: ./.github/workflows/sync-upstream.yml
+    secrets: inherit
+
   run-flutter-nightly-build:
+    needs: [sync-upstream]
     uses: ./.github/workflows/flutter-build.yml
     secrets: inherit
     with:
