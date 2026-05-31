@@ -33,15 +33,12 @@ jobs:
       - name: Fetch upstream master
         run: git fetch upstream master
 
-      - name: Merge upstream/master
+      - name: Merge upstream/master (auto-resolve conflicts favoring upstream)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git merge upstream/master || {
-            echo "::error::Merge conflict detected while syncing upstream. Manual resolution required."
-            git merge --abort
-            exit 1
-          }
+          # Use -X theirs to auto-resolve conflicts by accepting upstream changes
+          git merge -X theirs upstream/master --no-edit
 
       - name: Push to origin
         run: git push origin master
